@@ -75,6 +75,7 @@ export class PrivnoteInfraStack extends cdk.Stack {
       environment: {
         [BASE_TABLE_NAME]: notesTable.tableName,
       },
+      reservedConcurrentExecutions: 1,
     });
 
     const api = new HttpApi(this, 'httpApi', {
