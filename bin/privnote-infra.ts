@@ -10,7 +10,11 @@ new PrivnoteInfraStack(app, 'PrivnoteInfraStack', {
 
   /* Uncomment the next line to specialize this stack for the AWS Account
    * and Region that are implied by the current CLI configuration. */
-  // env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION },
+  env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION },
+
+  // export CDK_HOSTED_ZONE_NAME=test.best-security.us && export CDK_SUBDOMAIN=privnote && cdk ls
+  hostedZoneName: process.env.CDK_HOSTED_ZONE_NAME!,
+  subdomain: process.env.CDK_SUBDOMAIN!,
 
   /* Uncomment the next line if you know exactly what Account and Region you
    * want to deploy the stack to. */
