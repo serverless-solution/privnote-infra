@@ -1,9 +1,11 @@
 import express from 'express';
 import noteRoutes from './routes/noteRoutes';
+import { v5JsonBodyParserFix } from './middlewares/v5JsonBodyParserFix';
 
 const app = express();
 
-app.use(express.json());
+app.use(v5JsonBodyParserFix);
+// app.use(express.json());
 
 // routes
 app.use('/api/notes', noteRoutes);

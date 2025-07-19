@@ -7,7 +7,7 @@ export const createNoteController = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const note: Note = req.body.note;
+  const note: Note = req.body;
   const { data, error } = await tryCatch(createNoteService(note));
 
   if (error) {

@@ -7,18 +7,14 @@ import { getEnv } from '../../../utils/getEnv';
 export const saveNoteToDb = async (input: Note): Promise<Note> => {
   const { tableName } = getEnv;
 
-  const note: Note = {
-    noteId: '',
-    encryptedData: '',
-  };
-
   const command = new PutCommand({
     TableName: tableName,
-    Item: note,
+    Item: input,
+    ConditionExpression: 'attribute_not_exists(noteId)',
   });
 
   const { error } = await tryCatch(docClient.send(command));
-  if (error) throw new Error(`transactWriteCommandError: ${error.message}`);
+  if (error) throw new Error(`PutCommandError: ${error.message}`);
 
-  return note;
+  return input;
 };
