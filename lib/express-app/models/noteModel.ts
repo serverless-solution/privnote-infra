@@ -20,10 +20,10 @@ export const NoteReqSchema = z.object({
   ttl: z.date().nullable().optional().default(null),
 });
 
-export const NoteSchema = NoteReqSchema.transform((data) => ({
-  noteId: nanoid(),
-  ...data,
-}));
+export const NoteSchema = z.object({
+  noteId: z.nanoid(),
+  ...NoteReqSchema.shape,
+});
 
 export type Note = z.infer<typeof NoteSchema>;
 export type NoteReq = z.infer<typeof NoteReqSchema>;
