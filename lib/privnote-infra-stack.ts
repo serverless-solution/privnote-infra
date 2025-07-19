@@ -17,14 +17,15 @@ import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
 interface PrivnoteInfraProps extends cdk.StackProps {
   hostedZoneName: string;
   subdomain: string;
-  frontend: {
-    VITE_APP_TEST: string;
-  };
 }
 
 export class PrivnoteInfraStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: PrivnoteInfraProps) {
     super(scope, id, props);
+
+    const frontendEnv = {
+      VITE_APP_TEST: 'test',
+    };
 
     // common
     const hostedZone = HostedZone.fromLookup(this, 'HostedZone', {
@@ -105,7 +106,7 @@ export class PrivnoteInfraStack extends cdk.Stack {
             user: 'root:root',
             command: ['sh', '-c', 'npm i && npm run build && cp -R ./dist/* /asset-output/'],
             environment: {
-              ...props.frontend,
+              ...frontendEnv,
             },
           },
         }),
