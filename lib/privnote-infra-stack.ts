@@ -13,6 +13,8 @@ import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 import * as path from 'node:path';
 import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
 import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
+import { AttributeType, BillingMode, Table } from 'aws-cdk-lib/aws-dynamodb';
+import { BASE_TABLE_NAME } from './express-app/interfaces';
 
 interface PrivnoteInfraProps extends cdk.StackProps {
   hostedZoneName: string;
@@ -38,6 +40,15 @@ export class PrivnoteInfraStack extends cdk.Stack {
       subjectAlternativeNames: [`*.${hostedZone.zoneName}`],
     });
 
+    // ddb
+    const notesTable = new Table(this, 'notesTable', {
+      partitionKey: { name: 'pk', type: AttributeType.STRING },
+      sortKey: { name: 'sk', type: AttributeType.STRING },
+      billingMode: BillingMode.PAY_PER_REQUEST,
+      maxReadRequestUnits: 1,
+      maxWriteRequestUnits: 1,
+    });
+
     // api
     const apiLogGroup = new LogGroup(this, 'logGroup', { retention: RetentionDays.ONE_MONTH });
 
@@ -46,6 +57,9 @@ export class PrivnoteInfraStack extends cdk.Stack {
       entry: path.join(__dirname, 'serverless.ts'),
       logGroup: apiLogGroup,
       timeout: cdk.Duration.seconds(5),
+      environment: {
+        [BASE_TABLE_NAME]: notesTable.tableName,
+      },
     });
 
     const api = new HttpApi(this, 'httpApi', {
@@ -125,6 +139,8 @@ export class PrivnoteInfraStack extends cdk.Stack {
       zone: hostedZone,
       target: RecordTarget.fromAlias(new CloudFrontTarget(distribution)),
     });
+
+    notesTable.grantReadWriteData(apiLambda);
 
     new cdk.CfnOutput(this, 'url', { value: `https://${props.subdomain}.${hostedZone.zoneName}` });
   }
