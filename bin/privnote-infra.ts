@@ -29,5 +29,5 @@ console.log(
 );
 console.log(
   '\x1b[33m%s\x1b[0m',
-  `${process.env.CDK_SUBDOMAIN}.${process.env.CDK_HOSTED_ZONE_NAME}`
+  `${process.env.CDK_SUBDOMAIN}.${process.env.CDK_HOSTED_ZONE_NAME}\n`
 );
