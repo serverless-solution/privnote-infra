@@ -1,7 +1,7 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { ARecord, HostedZone, RecordTarget } from 'aws-cdk-lib/aws-route53';
-import { CertificateValidation, Certificate } from 'aws-cdk-lib/aws-certificatemanager';
+import { Certificate, CertificateValidation } from 'aws-cdk-lib/aws-certificatemanager';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { AllowedMethods, CachePolicy, Distribution, OriginRequestPolicy, ViewerProtocolPolicy } from 'aws-cdk-lib/aws-cloudfront';
 import { HttpOrigin, S3BucketOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
@@ -9,7 +9,7 @@ import { CorsHttpMethod, HttpApi, HttpMethod } from 'aws-cdk-lib/aws-apigatewayv
 import { HttpLambdaIntegration } from 'aws-cdk-lib/aws-apigatewayv2-integrations';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
-import { RetentionDays } from 'aws-cdk-lib/aws-logs';
+import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 import * as path from 'node:path';
 import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
 import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
@@ -39,10 +39,12 @@ export class PrivnoteInfraStack extends cdk.Stack {
     });
 
     // api
+    const apiLogGroup = new LogGroup(this, 'logGroup', { retention: RetentionDays.ONE_MONTH });
+
     const apiLambda = new NodejsFunction(this, 'apiLambda', {
       runtime: Runtime.NODEJS_22_X,
-      entry: path.join(__dirname, './api-lambda/serverless.ts'),
-      logRetention: RetentionDays.ONE_MONTH,
+      entry: path.join(__dirname, 'serverless.ts'),
+      logGroup: apiLogGroup,
       timeout: cdk.Duration.seconds(5),
     });
 
@@ -99,7 +101,7 @@ export class PrivnoteInfraStack extends cdk.Stack {
 
     new BucketDeployment(this, 'BucketDeployment', {
       sources: [
-        Source.asset(path.join(process.cwd(), '../hello-cdk-web'), {
+        Source.asset(path.join(process.cwd(), '../privnote-front'), {
           bundling: {
             // image: DockerImage.fromRegistry('public.ecr.aws/docker/library/node:22.17.1'),
             image: cdk.DockerImage.fromRegistry('node:22.17.1'),
