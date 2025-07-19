@@ -8,11 +8,10 @@ Content-Type: application/json
 GET {{host}}/api/notes/vmJWLQsx#a5X2Up19G
 Content-Type: application/json
 
-### create one
+### create one, data is base64 encoded
 POST {{host}}/api/notes
 Content-Type: application/json
 
 {
-
   "data": "aGVsbG8gd29ybGQK"
 }
