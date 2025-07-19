@@ -1,14 +1,23 @@
 import { Request, Response } from 'express';
 import { createNoteService } from '../services';
 import { tryCatch } from '../utils/tryCatch';
-import { Note } from '../models/noteModel';
+import { NoteSchema } from '../models/noteModel';
 
 export const createNoteController = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const note: Note = req.body;
-  const { data, error } = await tryCatch(createNoteService(note));
+  const maybeNote = NoteSchema.safeParse(req.body);
+
+  if (!maybeNote.success) {
+    res.status(500).json({
+      msg: 'ERR',
+      data: maybeNote.error.issues,
+    });
+    return;
+  }
+
+  const { data, error } = await tryCatch(createNoteService(maybeNote.data));
 
   if (error) {
     console.error('createNoteService:', error);
@@ -18,5 +27,6 @@ export const createNoteController = async (
     });
     return; // need to return as lambda logs "Cannot set headers after they are sent to the client"
   }
+
   res.json({ msg: 'OK', data: data });
 };
