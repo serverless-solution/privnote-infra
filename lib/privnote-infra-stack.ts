@@ -27,7 +27,11 @@ import * as path from 'node:path';
 import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
 import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
 import { AttributeType, BillingMode, Table } from 'aws-cdk-lib/aws-dynamodb';
-import { BASE_TABLE_NAME } from './express-app/interfaces';
+import {
+  BASE_TABLE_NAME,
+  CDK_HOSTED_ZONE_NAME,
+  CDK_SUBDOMAIN,
+} from './express-app/interfaces';
 
 interface PrivnoteInfraProps extends cdk.StackProps {
   hostedZoneName: string;
@@ -73,6 +77,8 @@ export class PrivnoteInfraStack extends cdk.Stack {
       timeout: cdk.Duration.seconds(5),
       environment: {
         [BASE_TABLE_NAME]: notesTable.tableName,
+        [CDK_HOSTED_ZONE_NAME]: props.hostedZoneName,
+        [CDK_SUBDOMAIN]: props.subdomain,
       },
       reservedConcurrentExecutions: 1,
     });

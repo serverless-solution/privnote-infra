@@ -10,4 +10,6 @@ function requireEnv(name: string): string {
 
 export const getEnv = {
   tableName: requireEnv('BASE_TABLE_NAME'),
+  subdomain: requireEnv('CDK_SUBDOMAIN'),
+  hostedZoneName: requireEnv('CDK_HOSTED_ZONE_NAME'),
 };

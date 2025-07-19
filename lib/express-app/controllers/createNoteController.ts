@@ -1,13 +1,16 @@
 import { Request, Response } from 'express';
 import { createNoteService } from '../services';
 import { tryCatch } from '../utils/tryCatch';
-import { Note, NoteReqSchema, NoteSchema } from '../models/noteModel';
+import { NoteReqSchema, NoteResSchema, NoteSchema } from '../models/noteModel';
 import { nanoid } from 'nanoid';
+import { getEnv } from '../utils/getEnv';
 
 export const createNoteController = async (
   req: Request,
   res: Response
 ): Promise<void> => {
+  const { hostedZoneName, subdomain } = getEnv;
+
   const maybeNoteReq = NoteReqSchema.safeParse(req.body);
   if (!maybeNoteReq.success) {
     res.status(500).json({
@@ -40,5 +43,20 @@ export const createNoteController = async (
     return; // need to return as lambda logs "Cannot set headers after they are sent to the client"
   }
 
-  res.json({ msg: 'OK', data: data });
+  const maybeNoteRes = NoteResSchema.safeParse({
+    hasManualPass: data?.hasManualPass,
+    durationHours: data?.durationHours,
+    dontAsk: data?.dontAsk,
+    noteLink: `https://${subdomain}.${hostedZoneName}/${data?.noteId}`,
+  });
+
+  if (!maybeNoteRes.success) {
+    res.status(500).json({
+      msg: 'ERR',
+      data: maybeNoteRes.error.issues,
+    });
+    return;
+  }
+
+  res.json({ msg: 'OK', data: maybeNoteRes.data });
 };
