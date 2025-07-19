@@ -1,13 +1,23 @@
 import { Request, Response } from 'express';
 import { createNoteService } from '../services';
 import { tryCatch } from '../utils/tryCatch';
-import { NoteSchema } from '../models/noteModel';
+import { NoteReqSchema, NoteSchema } from '../models/noteModel';
 
 export const createNoteController = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const maybeNote = NoteSchema.safeParse(req.body);
+  const maybeNoteReq = NoteReqSchema.safeParse(req.body);
+
+  if (!maybeNoteReq.success) {
+    res.status(500).json({
+      msg: 'ERR',
+      data: maybeNoteReq.error.issues,
+    });
+    return;
+  }
+
+  const maybeNote = NoteSchema.safeParse(maybeNoteReq.data);
 
   if (!maybeNote.success) {
     res.status(500).json({

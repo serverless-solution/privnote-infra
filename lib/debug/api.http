@@ -12,4 +12,7 @@ Content-Type: application/json
 POST {{host}}/api/notes
 Content-Type: application/json
 
-{"note": "dt10"}
+{
+
+  "encryptedData": "hellp"
+}
