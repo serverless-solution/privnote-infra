@@ -1,11 +1,24 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { ARecord, HostedZone, RecordTarget } from 'aws-cdk-lib/aws-route53';
-import { Certificate, CertificateValidation } from 'aws-cdk-lib/aws-certificatemanager';
+import {
+  Certificate,
+  CertificateValidation,
+} from 'aws-cdk-lib/aws-certificatemanager';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
-import { AllowedMethods, CachePolicy, Distribution, OriginRequestPolicy, ViewerProtocolPolicy } from 'aws-cdk-lib/aws-cloudfront';
+import {
+  AllowedMethods,
+  CachePolicy,
+  Distribution,
+  OriginRequestPolicy,
+  ViewerProtocolPolicy,
+} from 'aws-cdk-lib/aws-cloudfront';
 import { HttpOrigin, S3BucketOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
-import { CorsHttpMethod, HttpApi, HttpMethod } from 'aws-cdk-lib/aws-apigatewayv2';
+import {
+  CorsHttpMethod,
+  HttpApi,
+  HttpMethod,
+} from 'aws-cdk-lib/aws-apigatewayv2';
 import { HttpLambdaIntegration } from 'aws-cdk-lib/aws-apigatewayv2-integrations';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
@@ -50,7 +63,9 @@ export class PrivnoteInfraStack extends cdk.Stack {
     });
 
     // api
-    const apiLogGroup = new LogGroup(this, 'logGroup', { retention: RetentionDays.ONE_MONTH });
+    const apiLogGroup = new LogGroup(this, 'logGroup', {
+      retention: RetentionDays.ONE_MONTH,
+    });
 
     const apiLambda = new NodejsFunction(this, 'apiLambda', {
       runtime: Runtime.NODEJS_22_X,
@@ -88,11 +103,14 @@ export class PrivnoteInfraStack extends cdk.Stack {
       },
       additionalBehaviors: {
         'api/*': {
-          origin: new HttpOrigin(`${api.apiId}.execute-api.${this.region}.amazonaws.com`),
+          origin: new HttpOrigin(
+            `${api.apiId}.execute-api.${this.region}.amazonaws.com`
+          ),
           viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
           allowedMethods: AllowedMethods.ALLOW_ALL,
           cachePolicy: CachePolicy.CACHING_DISABLED,
-          originRequestPolicy: OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
+          originRequestPolicy:
+            OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
         },
       },
       domainNames: [`${props.subdomain}.${hostedZone.zoneName}`],
@@ -120,7 +138,11 @@ export class PrivnoteInfraStack extends cdk.Stack {
             // image: DockerImage.fromRegistry('public.ecr.aws/docker/library/node:22.17.1'),
             image: cdk.DockerImage.fromRegistry('node:22.17.1'),
             user: 'root:root',
-            command: ['sh', '-c', 'npm i && npm run build && cp -R ./dist/* /asset-output/'],
+            command: [
+              'sh',
+              '-c',
+              'npm i && npm run build && cp -R ./dist/* /asset-output/',
+            ],
             environment: {
               ...frontendEnv,
             },
@@ -142,6 +164,8 @@ export class PrivnoteInfraStack extends cdk.Stack {
 
     notesTable.grantReadWriteData(apiLambda);
 
-    new cdk.CfnOutput(this, 'url', { value: `https://${props.subdomain}.${hostedZone.zoneName}` });
+    new cdk.CfnOutput(this, 'url', {
+      value: `https://${props.subdomain}.${hostedZone.zoneName}`,
+    });
   }
 }
