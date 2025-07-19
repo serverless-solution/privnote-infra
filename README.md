@@ -8,6 +8,7 @@
 6. `aws sts get-caller-identity | cat` [doc](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 7. `export CDK_HOSTED_ZONE_NAME=test.best-security.us && export CDK_SUBDOMAIN=privnote`
 8. `cdk ls`
+9. `cdk bootstrap` bootstrap if asking
 
 This is a blank project for CDK development with TypeScript.
 
