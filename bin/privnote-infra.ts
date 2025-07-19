@@ -22,7 +22,7 @@ new PrivnoteInfraStack(app, 'PrivnoteInfraStack', {
   hostedZoneName: process.env.CDK_HOSTED_ZONE_NAME!,
   subdomain: process.env.CDK_SUBDOMAIN!,
 });
-console.log('\x1b[32m%s\x1b[0m', 'env settings:');
+console.log('\x1b[32m%s\x1b[0m', '\nenv settings:');
 console.log(
   '\x1b[33m%s\x1b[0m',
   `${process.env.CDK_DEFAULT_ACCOUNT} in ${process.env.CDK_DEFAULT_REGION}`
