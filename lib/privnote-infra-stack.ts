@@ -125,5 +125,7 @@ export class PrivnoteInfraStack extends cdk.Stack {
       zone: hostedZone,
       target: RecordTarget.fromAlias(new CloudFrontTarget(distribution)),
     });
+
+    new cdk.CfnOutput(this, 'url', { value: `https://${props.subdomain}.${hostedZone.zoneName}` });
   }
 }
