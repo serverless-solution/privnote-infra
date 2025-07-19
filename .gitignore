@@ -7,3 +7,6 @@ node_modules
 .cdk.staging
 cdk.out
 .idea
+
+# ignore CDK Context intentinally:
+cdk.context.json
