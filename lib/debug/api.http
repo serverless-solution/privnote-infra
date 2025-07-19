@@ -14,5 +14,5 @@ Content-Type: application/json
 
 {
 
-  "encryptedData": "hellp"
+  "data": "aGVsbG8gd29ybGQK"
 }

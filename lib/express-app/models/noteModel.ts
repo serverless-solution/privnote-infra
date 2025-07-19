@@ -7,21 +7,22 @@ import { nanoid } from 'nanoid';
 
 export const NoteReqSchema = z.object({
   // reference name for the note (optional)
-  encryptedData: z.string(),
+  data: z.base64(),
   // E-mail to notify when note is destroyed
-  noteName: z.string().nullable().optional().default(null),
+  notifyRef: z.string().nullable().optional().default(null),
   // note encrypted
-  email: z.email().nullable().optional().default(null),
+  notifyEmail: z.email().nullable().optional().default(null),
   // Do not ask for confirmation before showing and destroying the note.
-  askConfirmation: z.boolean().optional().default(true),
+  dontAsk: z.boolean().optional().default(false),
   // created with a custom password to encrypt the note
-  manualPassword: z.boolean().optional().default(false),
+  hasManualPass: z.boolean().optional().default(false),
   // Note self-destructs after
-  ttl: z.date().nullable().optional().default(null),
+  durationHours: z.date().nullable().optional().default(null),
 });
 
 export const NoteSchema = z.object({
   noteId: z.nanoid(),
+  dataType: z.string().optional().default('T'),
   ...NoteReqSchema.shape,
 });
 
