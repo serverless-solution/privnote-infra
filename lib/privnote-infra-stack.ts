@@ -55,8 +55,7 @@ export class PrivnoteInfraStack extends cdk.Stack {
 
     // ddb
     const notesTable = new Table(this, 'notesTable', {
-      partitionKey: { name: 'pk', type: AttributeType.STRING },
-      sortKey: { name: 'sk', type: AttributeType.STRING },
+      partitionKey: { name: 'noteId', type: AttributeType.STRING },
       billingMode: BillingMode.PAY_PER_REQUEST,
       maxReadRequestUnits: 1,
       maxWriteRequestUnits: 1,
