@@ -1,5 +1,5 @@
 import express from 'express';
-import { createNoteController } from '../controllers';
+import { createNoteController, getNoteController } from '../controllers';
 
 const router = express.Router();
 
@@ -9,9 +9,9 @@ router
     .post(createNoteController)
 
 // prettier-ignore
-// router
-//     .route('/:note')
-//     .get(getNoteController) // Fetch a tenant
+router
+    .route('/:note')
+    .get(getNoteController)
 //     .delete(delete); // Delete a report
 
 // // Middleware to validate the note parameter
