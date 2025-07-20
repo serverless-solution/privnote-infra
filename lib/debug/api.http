@@ -7,7 +7,7 @@ Content-Type: application/json
   "dontAsk": true
 }
 
-### get note' meta data by id where Pp7vG_gKfeoBEy6g17-_b is nonoid if a note
+### get meta data of a note by id - where Pp7vG_gKfeoBEy6g17-_b is nonoid
 GET {{host}}/api/notes/HhijMoG-LnPG7yVO0kADZ
 Content-Type: application/json
 
