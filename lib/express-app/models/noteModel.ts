@@ -35,6 +35,21 @@ export const NoteResSchema = z.object({
   ..._schema.shape,
 });
 
+export const GetNoteResSchema = z
+  .object({
+    ..._schema.shape,
+    data: z.base64().optional(),
+  })
+  .transform((obj) => {
+    return {
+      ...obj,
+      data: obj.dontAsk ? obj.data : undefined,
+    };
+  })
+  .refine((obj) => {
+    return !(obj.dontAsk && !obj.data);
+  });
+
 export type Note = z.infer<typeof NoteSchema>;
 export type NoteReq = z.infer<typeof NoteReqSchema>;
 export type NoteRes = z.infer<typeof NoteResSchema>;

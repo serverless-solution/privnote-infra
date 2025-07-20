@@ -1,7 +1,11 @@
 import { Request, Response } from 'express';
 import { getNoteService } from '../services';
 import { tryCatch } from '../utils/tryCatch';
-import { NoteResSchema } from '../models/noteModel';
+import {
+  GetNoteResSchema,
+  NoteResSchema,
+  NoteSchema,
+} from '../models/noteModel';
 import { getEnv } from '../utils/getEnv';
 import { z } from 'zod';
 
@@ -32,20 +36,30 @@ export const getNoteController = async (
     return;
   }
 
-  const maybeNoteRes = NoteResSchema.safeParse({
-    hasManualPass: data?.hasManualPass,
-    durationHours: data?.durationHours,
-    dontAsk: data?.dontAsk,
-    noteLink: `https://${subdomain}.${hostedZoneName}/${data?.noteId}`,
-  });
-
-  if (!maybeNoteRes.success) {
+  const maybeNote = NoteSchema.safeParse(data);
+  if (!maybeNote.success) {
     res.status(500).json({
       msg: 'ERR',
-      data: maybeNoteRes.error.issues,
+      data: maybeNote.error.issues,
     });
     return;
   }
 
-  res.json({ msg: 'OK', data: maybeNoteRes.data });
+  const maybeGetNoteRes = GetNoteResSchema.safeParse({
+    hasManualPass: maybeNote.data.hasManualPass,
+    durationHours: maybeNote.data.durationHours,
+    dontAsk: maybeNote.data.dontAsk,
+    noteLink: `https://${subdomain}.${hostedZoneName}/${maybeNote.data.noteId}`,
+    data: maybeNote.data.dontAsk ? maybeNote.data.data : undefined,
+  });
+
+  if (!maybeGetNoteRes.success) {
+    res.status(500).json({
+      msg: 'ERR',
+      data: maybeGetNoteRes.error.issues,
+    });
+    return;
+  }
+
+  res.json({ msg: 'OK', data: maybeGetNoteRes.data });
 };
