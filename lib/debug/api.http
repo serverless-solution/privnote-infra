@@ -5,7 +5,7 @@ Content-Type: application/json
 {"type":"default"}
 
 ### get one by id where vmJWLQsx is id and a5X2Up19G is password
-GET {{host}}/api/notes/vmJWLQsx#a5X2Up19G
+GET {{host}}/api/notes/Pp7vG_gKfeoBEy6g17-_b
 Content-Type: application/json
 
 ### create one, data is base64 encoded
