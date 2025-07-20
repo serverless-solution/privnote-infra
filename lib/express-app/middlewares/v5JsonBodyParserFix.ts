@@ -11,10 +11,15 @@ export function v5JsonBodyParserFix(
   next: NextFunction
 ): void {
   if (req.is('application/json') && Buffer.isBuffer(req.body)) {
-    try {
-      req.body = JSON.parse(req.body.toString('utf8'));
-    } catch (e) {
-      console.error('Failed to parse body:', e);
+    const bodyString = req.body.toString('utf8').trim();
+    if (bodyString.length > 0) {
+      try {
+        req.body = JSON.parse(bodyString);
+      } catch (e) {
+        console.error('Failed to parse body:', e);
+      }
+    } else {
+      req.body = {};
     }
   }
   next();
