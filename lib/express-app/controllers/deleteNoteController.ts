@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getNoteDataService } from '../services';
+import { deleteNoteService } from '../services';
 import { tryCatch } from '../utils/tryCatch';
 import { z } from 'zod';
 
@@ -17,7 +17,7 @@ export const deleteNoteController = async (
     return;
   }
 
-  const { data, error } = await tryCatch(getNoteDataService(maybeNoteId.data));
+  const { data, error } = await tryCatch(deleteNoteService(maybeNoteId.data));
 
   if (error) {
     console.error('getNoteDataService:', error);
