@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { nanoid } from 'nanoid';
 
 /**
  * @Note a Note
@@ -14,7 +13,7 @@ const _schema = z.object({
   dontAsk: z.boolean().optional().default(false),
 });
 
-export const NoteReqSchema = z.object({
+export const CreateNoteReqSchema = z.object({
   // data
   data: z.base64(),
   // reference name for the note (optional)
@@ -27,10 +26,10 @@ export const NoteReqSchema = z.object({
 export const NoteSchema = z.object({
   noteId: z.nanoid(),
   dataType: z.string().optional().default('T'),
-  ...NoteReqSchema.shape,
+  ...CreateNoteReqSchema.shape,
 });
 
-export const NoteResSchema = z.object({
+export const CreateNoteResSchema = z.object({
   noteLink: z.url(),
   ..._schema.shape,
 });
@@ -51,5 +50,5 @@ export const GetNoteResSchema = z
   });
 
 export type Note = z.infer<typeof NoteSchema>;
-export type NoteReq = z.infer<typeof NoteReqSchema>;
-export type NoteRes = z.infer<typeof NoteResSchema>;
+export type CreateNoteReq = z.infer<typeof CreateNoteReqSchema>;
+export type NoteRes = z.infer<typeof CreateNoteResSchema>;
