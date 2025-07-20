@@ -29,26 +29,9 @@ export const NoteSchema = z.object({
   ...CreateNoteReqSchema.shape,
 });
 
-export const CreateNoteResSchema = z.object({
+export const NoteMetaResSchema = z.object({
   noteLink: z.url(),
   ..._schema.shape,
 });
 
-export const GetNoteResSchema = z
-  .object({
-    ..._schema.shape,
-    data: z.base64().optional(),
-  })
-  .transform((obj) => {
-    return {
-      ...obj,
-      data: obj.dontAsk ? obj.data : undefined,
-    };
-  })
-  .refine((obj) => {
-    return !(obj.dontAsk && !obj.data);
-  });
-
 export type Note = z.infer<typeof NoteSchema>;
-export type CreateNoteReq = z.infer<typeof CreateNoteReqSchema>;
-export type NoteRes = z.infer<typeof CreateNoteResSchema>;

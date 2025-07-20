@@ -1,7 +1,7 @@
 import express from 'express';
 import {
   createNoteController,
-  getNoteController,
+  getNoteMetaController,
   getNoteDataController,
 } from '../controllers';
 
@@ -15,12 +15,13 @@ router
 // prettier-ignore
 router
     .route('/:note')
-    .get(getNoteController)
+    .get(getNoteMetaController)
+    .delete(getNoteDataController)
 
 // prettier-ignore
-router
-    .route('/:note/data')
-    .get(getNoteDataController);
+// router
+//     .route('/:note/data')
+//     .get(getNoteDataController);
 
 // // Middleware to validate the note parameter
 // router.param('note', (_req, _res, next, note: string) => {

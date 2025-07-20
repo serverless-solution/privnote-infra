@@ -1,15 +1,11 @@
 import { Request, Response } from 'express';
 import { getNoteService } from '../services';
 import { tryCatch } from '../utils/tryCatch';
-import {
-  GetNoteResSchema,
-  NoteResSchema,
-  NoteSchema,
-} from '../models/noteModel';
+import { NoteMetaResSchema, NoteSchema } from '../models/noteModel';
 import { getEnv } from '../utils/getEnv';
 import { z } from 'zod';
 
-export const getNoteController = async (
+export const getNoteMetaController = async (
   req: Request,
   res: Response
 ): Promise<void> => {
@@ -45,21 +41,20 @@ export const getNoteController = async (
     return;
   }
 
-  const maybeGetNoteRes = GetNoteResSchema.safeParse({
+  const maybeNoteMetaRes = NoteMetaResSchema.safeParse({
     hasManualPass: maybeNote.data.hasManualPass,
     durationHours: maybeNote.data.durationHours,
     dontAsk: maybeNote.data.dontAsk,
     noteLink: `https://${subdomain}.${hostedZoneName}/${maybeNote.data.noteId}`,
-    data: maybeNote.data.dontAsk ? maybeNote.data.data : undefined,
   });
 
-  if (!maybeGetNoteRes.success) {
+  if (!maybeNoteMetaRes.success) {
     res.status(500).json({
       msg: 'ERR',
-      data: maybeGetNoteRes.error.issues,
+      data: maybeNoteMetaRes.error.issues,
     });
     return;
   }
 
-  res.json({ msg: 'OK', data: maybeGetNoteRes.data });
+  res.json({ msg: 'OK', data: maybeNoteMetaRes.data });
 };
