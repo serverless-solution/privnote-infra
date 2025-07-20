@@ -20,10 +20,10 @@ export const deleteNoteController = async (
   const { data, error } = await tryCatch(deleteNoteService(maybeNoteId.data));
 
   if (error) {
-    console.error('getNoteDataService:', error);
+    console.error('deleteNoteService:', error);
     res.status(500).json({
       msg: 'ERR',
-      data: `getNoteDataService: ${error.message}`,
+      data: `deleteNoteService: ${error.message}`,
     });
     return;
   }

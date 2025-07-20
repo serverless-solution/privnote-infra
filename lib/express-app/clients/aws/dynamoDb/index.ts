@@ -1,4 +1,4 @@
 // barrel
 export * from './saveNoteToDb';
 export * from './getNoteFromDb';
-export * from './getNoteDataFromDb';
+export * from './deleteNoteFromDb';
