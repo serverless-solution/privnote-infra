@@ -1,18 +1,3 @@
-### debug put
-PUT {{host}}/api/debug?hello=world
-Content-Type: application/json
-
-{"type":"default"}
-
-### get one by id where Pp7vG_gKfeoBEy6g17-_b is nonoid if a note
-GET {{host}}/api/notes/Pp7vG_gKfeoBEy6g17-_b
-Content-Type: application/json
-
-### get data by id where Pp7vG_gKfeoBEy6g17-_b is nonoid if a note
-GET {{host}}/api/notes/Pp7vG_gKfeoBEy6g17-_b/data
-Content-Type: application/json
-
-
 ### create one, data is base64 encoded
 POST {{host}}/api/notes
 Content-Type: application/json
@@ -20,3 +5,17 @@ Content-Type: application/json
 {
   "data": "aGVsbG8gd29ybGQK"
 }
+
+### get one by id where Pp7vG_gKfeoBEy6g17-_b is nonoid if a note
+GET {{host}}/api/notes/ij357cN19ry7dmSagudQR
+Content-Type: application/json
+
+### get data by id where Pp7vG_gKfeoBEy6g17-_b is nonoid if a note
+GET {{host}}/api/notes/ij357cN19ry7dmSagudQR/data
+Content-Type: application/json
+
+### debug put
+PUT {{host}}/api/debug?hello=world
+Content-Type: application/json
+
+{"type":"default"}
