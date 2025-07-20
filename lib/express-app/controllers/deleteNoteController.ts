@@ -3,7 +3,7 @@ import { getNoteDataService } from '../services';
 import { tryCatch } from '../utils/tryCatch';
 import { z } from 'zod';
 
-export const getNoteDataController = async (
+export const deleteNoteController = async (
   req: Request,
   res: Response
 ): Promise<void> => {
