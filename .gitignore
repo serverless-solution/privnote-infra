@@ -10,3 +10,4 @@ cdk.out
 
 # ignore CDK Context intentinally:
 cdk.context.json
+.env
