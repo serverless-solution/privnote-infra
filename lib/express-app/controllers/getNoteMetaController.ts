@@ -5,19 +5,13 @@ import { NoteMetaResSchema, NoteSchema } from '../models/noteModel';
 import { getEnv } from '../utils/getEnv';
 import { z } from 'zod';
 
-export const getNoteMetaController = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const getNoteMetaController = async (req: Request, res: Response): Promise<void> => {
   const { hostedZoneName, subdomain } = getEnv;
 
   const maybeNoteId = z.nanoid().safeParse(req.params.note);
 
   if (!maybeNoteId.success) {
-    res.status(500).json({
-      msg: 'ERR',
-      data: maybeNoteId.error.issues,
-    });
+    res.status(500).json({ msg: 'ERR', data: maybeNoteId.error.issues });
     return;
   }
 
@@ -25,19 +19,13 @@ export const getNoteMetaController = async (
 
   if (error) {
     console.error('getNoteService:', error);
-    res.status(500).json({
-      msg: 'ERR',
-      data: `getNoteService: ${error.message}`,
-    });
+    res.status(500).json({ msg: 'ERR', data: `getNoteService: ${error.message}` });
     return;
   }
 
   const maybeNote = NoteSchema.safeParse(data);
   if (!maybeNote.success) {
-    res.status(500).json({
-      msg: 'ERR',
-      data: maybeNote.error.issues,
-    });
+    res.status(500).json({ msg: 'ERR', data: maybeNote.error.issues });
     return;
   }
 
@@ -49,10 +37,7 @@ export const getNoteMetaController = async (
   });
 
   if (!maybeNoteMetaRes.success) {
-    res.status(500).json({
-      msg: 'ERR',
-      data: maybeNoteMetaRes.error.issues,
-    });
+    res.status(500).json({ msg: 'ERR', data: maybeNoteMetaRes.error.issues });
     return;
   }
 
