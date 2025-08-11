@@ -1,5 +1,6 @@
 import { deleteNoteFromDb } from '../clients/aws';
+import { Note } from '../models/noteModel';
 
-export const deleteNoteService = async (input: string): Promise<string> => {
-  return await deleteNoteFromDb({ noteId: input });
+export const deleteNoteService = async (noteId: string): Promise<Note> => {
+  return await deleteNoteFromDb(noteId);
 };

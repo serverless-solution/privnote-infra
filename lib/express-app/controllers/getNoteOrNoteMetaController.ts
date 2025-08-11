@@ -1,13 +1,10 @@
 import { Request, Response } from 'express';
-import { getNoteService } from '../services';
+import { deleteNoteService, getNoteMetaService } from '../services';
 import { tryCatch } from '../utils/tryCatch';
-import { NoteMetaResSchema, NoteSchema } from '../models/noteModel';
-import { getEnv } from '../utils/getEnv';
+import { NoteMetaSchema, NoteSchema } from '../models/noteModel';
 import { z } from 'zod';
 
 export const getNoteOrNoteMetaController = async (req: Request, res: Response): Promise<void> => {
-  const { hostedZoneName, subdomain } = getEnv;
-
   const maybeNoteId = z.nanoid().safeParse(req.params.note);
 
   if (!maybeNoteId.success) {
@@ -15,7 +12,7 @@ export const getNoteOrNoteMetaController = async (req: Request, res: Response): 
     return;
   }
 
-  const { data, error } = await tryCatch(getNoteService(maybeNoteId.data));
+  const { data, error } = await tryCatch(getNoteMetaService(maybeNoteId.data));
 
   if (error) {
     console.error('getNoteService:', error);
@@ -23,23 +20,26 @@ export const getNoteOrNoteMetaController = async (req: Request, res: Response): 
     return;
   }
 
-  const maybeNote = NoteSchema.safeParse(data);
-  if (!maybeNote.success) {
-    res.status(500).json({ msg: 'ERR', data: maybeNote.error.issues });
+  const maybeNoteMeta = NoteMetaSchema.safeParse(data);
+  if (!maybeNoteMeta.success) {
+    res.status(500).json({ msg: 'ERR', data: maybeNoteMeta.error.issues });
     return;
   }
 
-  const maybeNoteMetaRes = NoteMetaResSchema.safeParse({
-    hasManualPass: maybeNote.data.hasManualPass,
-    durationHours: maybeNote.data.durationHours,
-    dontAsk: maybeNote.data.dontAsk,
-    noteLink: `https://${subdomain}.${hostedZoneName}/${maybeNote.data.noteId}`,
-  });
-
-  if (!maybeNoteMetaRes.success) {
-    res.status(500).json({ msg: 'ERR', data: maybeNoteMetaRes.error.issues });
-    return;
+  if (maybeNoteMeta.data.dontAsk) {
+    const { data, error } = await tryCatch(deleteNoteService(maybeNoteMeta.data.noteId));
+    if (error) {
+      console.error('deleteNoteService', error);
+      res.status(500).json({ msg: 'ERR', data: `deleteNoteService: ${error.message}` });
+      return;
+    }
+    const maybeNote = NoteSchema.safeParse(data);
+    if (!maybeNote.success) {
+      res.status(500).json({ msg: 'ERR', data: maybeNote.error.issues });
+      return;
+    }
+    res.json({ msg: 'OK', data: maybeNote.data });
+  } else {
+    res.json({ msg: 'OK', data: maybeNoteMeta.data });
   }
-
-  res.json({ msg: 'OK', data: maybeNoteMetaRes.data });
 };

@@ -2,16 +2,9 @@ import { DeleteCommand } from '@aws-sdk/lib-dynamodb';
 import { tryCatch } from '../../../utils/tryCatch';
 import { docClient } from '../client';
 import { getEnv } from '../../../utils/getEnv';
-import { NoteSchema } from '../../../models/noteModel';
+import { Note, NoteSchema } from '../../../models/noteModel';
 
-interface GetNoteDataFromDbInput {
-  noteId: string;
-}
-
-export const deleteNoteFromDb = async (
-  input: GetNoteDataFromDbInput
-): Promise<string> => {
-  const { noteId } = input;
+export const deleteNoteFromDb = async (noteId: string): Promise<Note> => {
   const { tableName } = getEnv;
 
   const command = new DeleteCommand({
@@ -33,5 +26,5 @@ export const deleteNoteFromDb = async (
   }
 
   // return note data in base64
-  return note.data.data;
+  return note.data;
 };

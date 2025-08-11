@@ -1,3 +1,3 @@
 export * from './createNoteService';
-export * from './getNoteService';
+export * from './getNoteMetaService';
 export * from './deleteNoteService';

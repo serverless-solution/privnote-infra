@@ -2,18 +2,13 @@ import { Request, Response } from 'express';
 import { deleteNoteService } from '../services';
 import { tryCatch } from '../utils/tryCatch';
 import { z } from 'zod';
+import { NoteSchema } from '../models/noteModel';
 
-export const deleteNoteController = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const deleteNoteController = async (req: Request, res: Response): Promise<void> => {
   const maybeNoteId = z.nanoid().safeParse(req.params.note);
 
   if (!maybeNoteId.success) {
-    res.status(500).json({
-      msg: 'ERR',
-      data: maybeNoteId.error.issues,
-    });
+    res.status(500).json({ msg: 'ERR', data: maybeNoteId.error.issues });
     return;
   }
 
@@ -21,22 +16,16 @@ export const deleteNoteController = async (
 
   if (error) {
     console.error('deleteNoteService:', error);
-    res.status(500).json({
-      msg: 'ERR',
-      data: `deleteNoteService: ${error.message}`,
-    });
+    res.status(500).json({ msg: 'ERR', data: `deleteNoteService: ${error.message}` });
     return;
   }
 
-  const maybeNoteData = z.base64().safeParse(data);
+  const maybeNote = NoteSchema.safeParse(data);
 
-  if (!maybeNoteData.success) {
-    res.status(500).json({
-      msg: 'ERR',
-      data: maybeNoteData.error.issues,
-    });
+  if (!maybeNote.success) {
+    res.status(500).json({ msg: 'ERR', data: maybeNote.error.issues });
     return;
   }
 
-  res.json({ msg: 'OK', data: maybeNoteData.data });
+  res.json({ msg: 'OK', data: maybeNote.data });
 };

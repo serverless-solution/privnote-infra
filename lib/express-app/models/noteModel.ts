@@ -4,7 +4,7 @@ import { z } from 'zod';
  * @Note a Note
  */
 
-const _schema = z.object({
+const _publicSchema = z.object({
   // created with a custom password to encrypt the note
   hasManualPass: z.boolean().optional().default(false),
   // Note self-destructs after
@@ -20,7 +20,7 @@ export const CreateNoteReqSchema = z.object({
   notifyRef: z.string().nullable().optional().default(null),
   // E-mail to notify when note is destroyed
   notifyEmail: z.email().nullable().optional().default(null),
-  ..._schema.shape,
+  ..._publicSchema.shape,
 });
 
 export const NoteSchema = z.object({
@@ -29,9 +29,10 @@ export const NoteSchema = z.object({
   ...CreateNoteReqSchema.shape,
 });
 
-export const NoteMetaResSchema = z.object({
-  noteLink: z.url(),
-  ..._schema.shape,
+export const NoteMetaSchema = z.object({
+  noteId: z.nanoid(),
+  ..._publicSchema.shape,
 });
 
 export type Note = z.infer<typeof NoteSchema>;
+export type NoteMeta = z.infer<typeof NoteMetaSchema>;
