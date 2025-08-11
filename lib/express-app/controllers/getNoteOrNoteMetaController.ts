@@ -5,7 +5,7 @@ import { NoteMetaResSchema, NoteSchema } from '../models/noteModel';
 import { getEnv } from '../utils/getEnv';
 import { z } from 'zod';
 
-export const getNoteMetaController = async (req: Request, res: Response): Promise<void> => {
+export const getNoteOrNoteMetaController = async (req: Request, res: Response): Promise<void> => {
   const { hostedZoneName, subdomain } = getEnv;
 
   const maybeNoteId = z.nanoid().safeParse(req.params.note);

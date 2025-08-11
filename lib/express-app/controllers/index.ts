@@ -1,3 +1,3 @@
 export * from './createNoteController';
-export * from './getNoteMetaController';
+export * from './getNoteOrNoteMetaController';
 export * from './deleteNoteController';

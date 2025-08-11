@@ -1,9 +1,5 @@
 import express from 'express';
-import {
-  createNoteController,
-  getNoteMetaController,
-  deleteNoteController,
-} from '../controllers';
+import { createNoteController, getNoteOrNoteMetaController, deleteNoteController } from '../controllers';
 
 const router = express.Router();
 
@@ -15,7 +11,7 @@ router
 // prettier-ignore
 router
     .route('/:note')
-    .get(getNoteMetaController)
+    .get(getNoteOrNoteMetaController)
     .delete(deleteNoteController)
 
 // prettier-ignore
