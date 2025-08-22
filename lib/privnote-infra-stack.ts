@@ -20,7 +20,7 @@ import {
   HttpMethod,
 } from 'aws-cdk-lib/aws-apigatewayv2';
 import { HttpLambdaIntegration } from 'aws-cdk-lib/aws-apigatewayv2-integrations';
-import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
+import { NodejsFunction, OutputFormat } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 import * as path from 'node:path';
@@ -80,7 +80,14 @@ export class PrivnoteInfraStack extends cdk.Stack {
         [CDK_HOSTED_ZONE_NAME]: props.hostedZoneName,
         [CDK_SUBDOMAIN]: props.subdomain,
       },
-      reservedConcurrentExecutions: 1,
+      // reservedConcurrentExecutions: 1,
+      bundling: {
+        forceDockerBundling: false,
+        nodeModules: ['esbuild'],
+        externalModules: ['aws-sdk'],
+        minify: true,
+        format: OutputFormat.CJS,
+      },
     });
 
     const api = new HttpApi(this, 'httpApi', {
@@ -137,25 +144,9 @@ export class PrivnoteInfraStack extends cdk.Stack {
       ],
     });
 
-    new BucketDeployment(this, 'BucketDeployment', {
+    new BucketDeployment(this, 'TextcleanBucketDeployment', {
       sources: [
-        Source.asset(path.join(process.cwd(), '../privnote-front'), {
-          bundling: {
-            // image: DockerImage.fromRegistry('public.ecr.aws/docker/library/node:22.17.1'),
-            image: cdk.DockerImage.fromRegistry('node:22.17.1'),
-            user: 'root:root',
-            command: [
-              'sh',
-              '-c',
-              'npm i && npm run build && cp -R ./dist/* /asset-output/',
-            ],
-            environment: {
-              ...frontendEnv,
-            },
-          },
-        }),
-        // Source.data('/assets/settings.js', `window.appSettings = {\'version\': \'${version}\', \'commitId\': \'${commitId}\'};`),
-        // Source.jsonData('/assets/settings.json', {version: version, commitId: commitId}),
+        Source.asset(path.join(process.cwd(), '../privnote-front/dist')),
       ],
       destinationBucket: webSiteBucket,
       distributionPaths: ['/*'],
